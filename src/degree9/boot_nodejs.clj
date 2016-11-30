@@ -11,19 +11,18 @@
 (boot/deftask cljs-edn
   "Generate a .cljs.edn file."
   [e edn      VAL str   "EDN file name."
-   i init-fn  VAL sym   "EDN init function."
    r require  VAL [sym] "Vector of namespaces to require."
    f init-fns VAL [sym] "Vector of fuctions to wrap in do block."
    t target   VAL kw    "Target platform."
    d closure-defines  VAL {} "A map of closure defines options."
    o compiler-options VAL {} "A map of compiler options."]
    (assert (:edn *opts*) "Must provide an edn file name.")
-   (assert (:init-fn *opts*) "Must provide an init-fn.")
+   (assert (:init-fns *opts*) "Must provide an init-fn.")
    (let [edn    (:edn *opts*)
          init   (:init-fn *opts*)
          main   (symbol (namespace init))
-         ednstr {:require (:require *opts* [main])
-                 :init-fns (:init-fns *opts* [init])
+         ednstr {:require (:require *opts* [])
+                 :init-fns (:init-fns *opts* [])
                  :compiler-options (:compiler-options *opts*
                                      {:target (:target *opts*)
                                       :closure-defines (:closure-defines *opts*)})}
