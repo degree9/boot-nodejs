@@ -17,10 +17,9 @@
    d closure-defines  VAL {} "A map of closure defines options."
    o compiler-options VAL {} "A map of compiler options."]
    (assert (:edn *opts*) "Must provide an edn file name.")
-   (assert (:init-fns *opts*) "Must provide an init-fn.")
+   (assert (:init-fns *opts*) "Must provide init-fns.")
    (let [edn    (:edn *opts*)
          init   (:init-fn *opts*)
-         main   (symbol (namespace init))
          ednstr {:require (:require *opts* [])
                  :init-fns (:init-fns *opts* [])
                  :compiler-options (:compiler-options *opts*
@@ -46,9 +45,9 @@
 
 (boot/deftask serve
   "Start a Node.js server."
-  [e edn VAL str  "Node.js main edn file name."]
-  (let [edn (:edn *opts* "nodejs")
-        app (str edn ".js")
+  [s script VAL str  "Node.js main script file."]
+  (let [script (:script *opts* "nodejs")
+        app (str script ".js")
         tmp (boot/tmp-dir!)
         tmp-dir (.getAbsolutePath tmp)
         pod (atom nil)
@@ -75,5 +74,5 @@
      (cljs-edn
        :edn (:edn *opts* "nodejs")
        :target :nodejs
-       :init-fn (:init-fn *opts*)
+       :init-fns [(:init-fn *opts*)]
        :closure-defines {'nodejs-cljs.core/dev? (:dev *opts* false)}))
