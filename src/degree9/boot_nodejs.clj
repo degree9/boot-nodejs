@@ -47,7 +47,6 @@
   "Start a Node.js server."
   [s script VAL str  "Node.js main script file."]
   (let [script (:script *opts* "nodejs")
-        app (str script ".js")
         tmp (boot/tmp-dir!)
         tmp-dir (.getAbsolutePath tmp)
         pod (atom nil)
@@ -57,8 +56,11 @@
                      (pod/with-eval-in @pod
                        (require '[me.raynes.conch.low-level :as sh]
                                 '[boot.util :as util])
-                       (def server (sh/proc "node" ~app :dir ~tmp-dir))
-                       (sh/stream-to-out server :out)))
+                       (def server (sh/proc "node" ~script :dir ~tmp-dir))
+                       (def exit (future (sh/exit-code server)))
+                       (sh/stream-to-out server :out)
+                       (when-not (= 0 @exit)
+                         (throw (:err server)))))
         stop (delay (util/info (str "Stopping Node.js...\n"))
                     (util/guard (pod/with-eval-in @pod (sh/destroy server))))]
        (boot/cleanup @stop)
