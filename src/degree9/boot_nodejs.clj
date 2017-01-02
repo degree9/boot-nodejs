@@ -33,15 +33,20 @@
        (doto fedn (spit ednstr))
        (-> fileset (boot/add-resource tmp) boot/commit!))))
 
-(defn copy-fileset! [tmp]
-  (boot/with-pre-wrap fileset
-    (let [files (->> fileset boot/output-files (map (juxt boot/tmp-path boot/tmp-file)))]
-      (util/info "Copying files to temp dir...\n")
-      (prn (.getAbsolutePath tmp))
-      (doseq [[path in-file] files]
-        (let [out-file (doto (io/file tmp path) io/make-parents)]
-          (io/copy in-file out-file)))
-      fileset)))
+(defn- stop-nodejs [server]
+  (when @server
+    (util/info (str "Stopping Node.js...\n"))
+    (sh/destroy @server)
+    (reset! server nil)))
+
+(defn- start-nodejs [server & [{:keys [script dir]}]]
+  (when-not @server
+    (util/info (str "Starting Node.js...\n"))
+    (reset! server (sh/proc "node" script :dir dir))
+    (sh/stream-to-out @server :out)
+    (when-not (= 0 @(future (sh/exit-code @server)))
+      (util/fail (str "Node.js Error...\n"))
+      (util/fail (str (sh/stream-to-string @server :err) "\n")))))
 
 (boot/deftask serve
   "Start a Node.js server."
@@ -51,24 +56,13 @@
         tmp (boot/tmp-dir!)
         tmp-dir (.getAbsolutePath tmp)
         sync! #(apply boot/sync! tmp (boot/output-dirs %))
-        stop #(when @server
-                (util/info (str "Stopping Node.js...\n"))
-                (sh/destroy @server)
-                (reset! server nil))
-        exit (future (sh/exit-code @server))
-        start #(when-not @server
-                (util/info (str "Starting Node.js...\n"))
-                (reset! server (sh/proc "node" script :dir tmp-dir))
-                (sh/stream-to-out @server :out)
-                (when-not (= 0 @exit)
-                  (util/fail (str "Node.js Error...\n"))
-                  (util/fail (str (sh/stream-to-string @server :err) "\n"))))]
+        stop #(stop-nodejs server)
+        start #(start-nodejs server :script script :dir tmp-dir)]
        (boot/cleanup (stop))
        (boot/with-pass-thru fileset
          (sync! fileset)
          (stop)
          (future (start)))))
-
 
 (boot/deftask nodejs
     "Generate a Node.js edn."
