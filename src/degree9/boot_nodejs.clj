@@ -5,7 +5,6 @@
             [boot.pod :as pod]
             [clojure.java.io :as io]
             [cheshire.core :refer :all]
-            [degree9.boot-exec :as exec]
             [me.raynes.conch.low-level :as sh]))
 
 (boot/deftask cljs-edn
@@ -29,7 +28,8 @@
          fname  (str edn ".cljs.edn")
          fedn   (io/file tmp fname)]
      (boot/with-pre-wrap fileset
-       (util/info (str "Generating EDN file: " fname "\n"))
+       (util/info "Generating EDN file...\n")
+       (util/info "• %s\n" fname)
        (doto fedn (spit ednstr))
        (-> fileset (boot/add-resource tmp) boot/commit!))))
 
@@ -47,25 +47,28 @@
   "Start a Node.js server."
   [s script VAL str  "Node.js main script file."]
   (let [script (:script *opts* "nodejs")
+        server (atom nil)
         tmp (boot/tmp-dir!)
         tmp-dir (.getAbsolutePath tmp)
-        pod (atom nil)
         sync! #(apply boot/sync! tmp (boot/output-dirs %))
-        start (delay (util/info (str "Starting Node.js...\n"))
-                     (reset! pod (pod/make-pod (boot/get-env)))
-                     (pod/with-eval-in @pod
-                       (require '[me.raynes.conch.low-level :as sh]
-                                '[boot.util :as util])
-                       (def server (sh/proc "node" ~script :dir ~tmp-dir))
-                       (def exit (future (sh/exit-code server)))
-                       (sh/stream-to-out server :out)
-                       (when-not (= 0 @exit)
-                         (throw (:err server)))))
-        stop (delay (util/info (str "Stopping Node.js...\n"))
-                    (util/guard (pod/with-eval-in @pod (sh/destroy server))))]
-       (boot/cleanup @stop)
-       (boot/with-pre-wrap [fs]
-         (util/with-let [_ fs] (sync! fs) @start))))
+        stop #(when @server
+                (util/info (str "Stopping Node.js...\n"))
+                (sh/destroy @server)
+                (reset! server nil))
+        exit (future (sh/exit-code @server))
+        start #(when-not @server
+                (util/info (str "Starting Node.js...\n"))
+                (reset! server (sh/proc "node" script :dir tmp-dir))
+                (sh/stream-to-out @server :out)
+                (when-not (= 0 @exit)
+                  (util/fail (str "Node.js Error...\n"))
+                  (util/fail (str (sh/stream-to-string @server :err) "\n"))))]
+       (boot/cleanup (stop))
+       (boot/with-pass-thru fileset
+         (sync! fileset)
+         (stop)
+         (future (start)))))
+
 
 (boot/deftask nodejs
     "Generate a Node.js edn."
