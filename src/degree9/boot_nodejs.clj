@@ -33,16 +33,6 @@
        (doto fedn (spit ednstr))
        (-> fileset (boot/add-resource tmp) boot/commit!))))
 
-(defn copy-fileset! [tmp]
-  (boot/with-pre-wrap fileset
-    (let [files (->> fileset boot/output-files (map (juxt boot/tmp-path boot/tmp-file)))]
-      (util/info "Copying files to temp dir...\n")
-      (prn (.getAbsolutePath tmp))
-      (doseq [[path in-file] files]
-        (let [out-file (doto (io/file tmp path) io/make-parents)]
-          (io/copy in-file out-file)))
-      fileset)))
-
 (boot/deftask serve
   "Start a Node.js server."
   [s script VAL str  "Node.js main script file."]
