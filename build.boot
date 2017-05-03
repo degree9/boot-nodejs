@@ -1,9 +1,8 @@
 (set-env!
- :dependencies  '[[org.clojure/clojure                 "1.8.0" :scope "provided"]
+ :dependencies  '[[org.clojure/clojure                 "1.8.0"]
                   [adzerk/bootlaces                    "0.1.13" :scope "test"]
                   [boot/core                           "2.7.1"]
-                  [degree9/boot-semver                 "1.4.3" :scope "test"]
-                  [degree9/boot-exec                   "0.5.0"]
+                  [degree9/boot-semver                 "1.4.4" :scope "test"]
                   [me.raynes/conch                     "0.8.0"]]
  :resource-paths   #{"src"})
 
@@ -14,7 +13,6 @@
 (task-options!
   target {:dir #{"target"}}
   pom {:project 'degree9/boot-nodejs
-       :version (get-version)
        :description "Compile cljs app to node.js."
        :url         "https://github.com/degree9/boot-nodejs"
        :scm         {:url "https://github.com/degree9/boot-nodejs"}})
