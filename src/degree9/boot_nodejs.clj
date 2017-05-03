@@ -35,7 +35,7 @@
 
 (boot/deftask serve
   "Start a Node.js server."
-  [s script VAL str  "Node.js main script file."]
+  [s script VAL str  "Node.js main script file. (nodejs)"]
   (let [script (:script *opts* "nodejs")
         server (atom nil)
         tmp (boot/tmp-dir!)
@@ -62,12 +62,12 @@
 
 (boot/deftask nodejs
     "Generate a Node.js edn."
-    [e edn       VAL str  "Node.js main edn name."
+    [e edn       VAL str  "Node.js main edn name. (nodejs)"
      i init-fn   VAL sym  "Node.js init function."
-     d dev           bool "Sets nodejs-cljs dev flag."]
+     d develop       bool "Sets nodejs-cljs dev flag."]
      (assert (:init-fn *opts*) "Must provide an init-fn.")
      (cljs-edn
        :edn (:edn *opts* "nodejs")
        :target :nodejs
        :init-fns [(:init-fn *opts*)]
-       :closure-defines {'nodejs-cljs.core/dev? (:dev *opts* false)}))
+       :closure-defines {'nodejs-cljs.core/dev? (:develop *opts* false)}))
