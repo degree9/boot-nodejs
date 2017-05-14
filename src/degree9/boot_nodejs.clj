@@ -4,7 +4,6 @@
             [boot.util :as util]
             [boot.pod :as pod]
             [clojure.java.io :as io]
-            [cheshire.core :refer :all]
             [me.raynes.conch.low-level :as sh]))
 
 (boot/deftask cljs-edn
