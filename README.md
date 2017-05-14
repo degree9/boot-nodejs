@@ -1,5 +1,7 @@
 # boot-nodejs #
 [![Clojars Project](https://img.shields.io/clojars/v/degree9/boot-nodejs.svg)](https://clojars.org/degree9/boot-nodejs)
+[![Dependencies Status](https://jarkeeper.com/degree9/boot-nodejs/status.svg)](https://jarkeeper.com/degree9/boot-nodejs)
+[![Downloads](https://jarkeeper.com/degree9/boot-nodejs/downloads.svg)](https://jarkeeper.com/degree9/boot-nodejs)
 
 Node.js wrapper task for [boot-clj][1].
 
