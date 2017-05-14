@@ -44,12 +44,12 @@
                 (util/info (str "Stopping Node.js...\n"))
                 (sh/destroy @server)
                 (reset! server nil))
-        exit (future (sh/exit-code @server))
+        exit #(future (sh/exit-code @server))
         start #(when-not @server
                 (util/info (str "Starting Node.js...\n"))
                 (reset! server (sh/proc "node" script :dir tmp-dir))
                 (sh/stream-to-out @server :out)
-                (when-not (= 0 @exit)
+                (when-not (= 0 @(exit))
                   (util/fail (str "Node.js Error...\n"))
                   (util/fail (str (sh/stream-to-string @server :err) "\n"))))]
        (boot/cleanup (stop))
