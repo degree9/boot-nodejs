@@ -1,6 +1,6 @@
 (set-env!
  :dependencies  '[[org.clojure/clojure                 "1.8.0"]
-                  [boot/core                           "2.7.2"]
+                  [boot/core                           "2.7.1"]
                   [degree9/boot-semver                 "1.4.4" :scope "test"]
                   [me.raynes/conch                     "0.8.0"]]
  :resource-paths   #{"src"})
