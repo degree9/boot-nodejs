@@ -5,6 +5,18 @@
 
 Node.js wrapper task for [boot-clj][1].
 
+---
+
+<p align="center">
+  <a href="https://degree9.io" align="center">
+    <img width="135" src="http://degree9.io/images/degree9.png">
+  </a>
+  <br>
+  <b>boot-nodejs is developed and maintained by Degree9</b>
+</p>
+
+---
+
 * Provides `nodejs` task for generating node.js entrypoint.
 * Provides `serve` task for executing node.js server.
 
