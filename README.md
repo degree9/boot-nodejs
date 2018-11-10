@@ -77,6 +77,16 @@ s script VAL str  "Node.js main script file. (nodejs)"
 
 If you use a custom `:edn` name for `nodejs` task, that name can be used for the `:script` option of the `serve` task.
 
-***
+---
+
+<p align="center">
+  <a href="https://www.patreon.com/degree9" align="center">
+    <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160" alt="Patreon">
+  </a>
+  <br>
+  <b>Support this and other open-source projects on Patreon!</b>
+</p>
+
+---
 
 [1]: https://github.com/boot-clj/boot
