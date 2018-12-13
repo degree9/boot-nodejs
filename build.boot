@@ -5,8 +5,7 @@
                   [me.raynes/conch                     "0.8.0"]]
  :resource-paths   #{"src"})
 
-(require
-  '[degree9.boot-semver :refer :all])
+(require '[degree9.boot-semver :refer :all])
 
 (task-options!
   target {:dir #{"target"}}
