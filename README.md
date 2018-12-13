@@ -1,7 +1,9 @@
-# boot-nodejs #
+<p align="center"><img src="/.github/d9boot-nodejs.png" width="445px"></p>
+
 [![Clojars Project](https://img.shields.io/clojars/v/degree9/boot-nodejs.svg)](https://clojars.org/degree9/boot-nodejs)
 [![Dependencies Status](https://jarkeeper.com/degree9/boot-nodejs/status.svg)](https://jarkeeper.com/degree9/boot-nodejs)
 [![Downloads](https://jarkeeper.com/degree9/boot-nodejs/downloads.svg)](https://jarkeeper.com/degree9/boot-nodejs)
+[![Slack][slack]][d9-slack]
 
 Node.js wrapper task for [boot-clj][1].
 
@@ -67,3 +69,5 @@ If you use a custom `:edn` name for `nodejs` task, that name can be used for the
 ***
 
 [1]: https://github.com/boot-clj/boot
+[slack]: https://img.shields.io/badge/clojurians-degree9-%23e01563.svg?logo=slack
+[d9-slack]: https://clojurians.slack.com/channels/degree9/
