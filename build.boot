@@ -1,8 +1,7 @@
 (set-env!
- :dependencies  '[[org.clojure/clojure                 "1.10.0"]
-                  [boot/core                           "2.8.2"]
-                  [degree9/boot-semver                 "1.8.0" :scope "test"]
-                  [me.raynes/conch                     "0.8.0"]]
+ :dependencies  '[[boot/core           "2.8.2"]
+                  [degree9/boot-io     "1.4.0"]
+                  [degree9/boot-semver "1.8.0" :scope "test"]]
  :resource-paths   #{"src"})
 
 (require '[degree9.boot-semver :refer :all])
@@ -18,11 +17,11 @@
   "Build boot-nodejs for development."
   []
   (comp
-   (watch)
    (version :develop true
             :minor 'inc
             :patch 'zero
             :pre-release 'snapshot)
+   (watch)
    (target)
    (build-jar)))
 
