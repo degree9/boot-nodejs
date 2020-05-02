@@ -15,9 +15,7 @@
 (defn- fs-sync! [tmp]
   (let [prev (atom nil)]
     (boot/with-pass-thru fileset
-      (let [diff (->> fileset
-                      (boot/fileset-diff @prev)
-                      (boot/output-dirs))]
+      (let [diff (boot/fileset-diff fileset @prev)]
         (reset! prev fileset)
         (apply boot/sync! tmp diff)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -47,8 +45,8 @@
   (let [script  (:script *opts* "nodejs")
         modules (:modules *opts* "./node_modules")
         tmp     (boot/tmp-dir!)
-        source (io/file modules)
-        target (io/file tmp modules)]
+        source  (io/file modules)
+        target  (io/file tmp modules)]
     (boot/cleanup (stop!))
     (comp
       (boot/with-pre-wrap fileset
