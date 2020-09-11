@@ -15,7 +15,9 @@
 (defn- fs-sync! [tmp]
   (let [prev (atom nil)]
     (boot/with-pass-thru fileset
-      (let [diff (boot/fileset-diff fileset @prev)]
+      (let [diff (->> fileset
+                      (boot/fileset-diff @prev)
+                      (boot/output-dirs))]
         (reset! prev fileset)
         (apply boot/sync! tmp diff)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
